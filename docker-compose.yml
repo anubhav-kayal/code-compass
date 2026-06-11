@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: code-compass-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: code-compass
+
+  neo4j:
+    image: neo4j:5
+    container_name: code-compass-neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j-data:/data
+    environment:
+      NEO4J_AUTH: neo4j/password
+      NEO4J_PLUGINS: '["apoc"]'
+
+  redis:
+    image: redis:7-alpine
+    container_name: code-compass-redis
+    ports:
+      - "6379:6379"
+
+volumes:
+  mongo-data:
+  neo4j-data:
