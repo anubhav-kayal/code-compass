@@ -16,12 +16,12 @@ export const config = {
   },
   llm: {
     apiKey: process.env.LLM_API_KEY || "",
-    model: process.env.LLM_MODEL || "gpt-4o",
-    endpoint: process.env.LLM_ENDPOINT || "https://api.openai.com/v1",
+    model: process.env.LLM_MODEL || "llama3.2",
+    endpoint: process.env.LLM_ENDPOINT || "http://localhost:11434/v1",
   },
   embedding: {
-    model: process.env.EMBEDDING_MODEL || "text-embedding-3-small",
-    dimension: parseInt(process.env.EMBEDDING_DIMENSION || "1536", 10),
+    model: process.env.EMBEDDING_MODEL || "nomic-embed-text",
+    dimension: parseInt(process.env.EMBEDDING_DIMENSION || "768", 10),
   },
   github: {
     token: process.env.GITHUB_TOKEN || "",

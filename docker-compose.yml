@@ -29,6 +29,22 @@ services:
     ports:
       - "6379:6379"
 
+  # ollama:
+  #   image: ollama/ollama
+  #   container_name: code-compass-ollama
+  #   ports:
+  #     - "11434:11434"
+  #   volumes:
+  #     - ollama-data:/root/.ollama
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: all
+  #             capabilities: [gpu]
+
 volumes:
   mongo-data:
   neo4j-data:
+  # ollama-data:
