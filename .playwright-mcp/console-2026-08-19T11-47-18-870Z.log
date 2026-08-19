@@ -1,2 +1,0 @@
-[    2454ms] The requested module '/node_modules/.vite/deps/react-syntax-highlighter_dist_esm_styles_hljs_atom-one-dark.js?v=d4b470c6' does not provide an export named 'oneDark'
-[   25765ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ http://localhost:3000/node_modules/.vite/deps/chunk-6GSFWH52.js?v=d4b470c6:21550
