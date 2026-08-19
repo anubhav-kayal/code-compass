@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Chunk } from "../../services/mongo";
 import { hybridRetrieve, keywordSearch } from "../../services/rag";
 import { neo4jClient } from "../../services/neo4j";
+import { int } from "neo4j-driver";
 import { AppError } from "../middleware/errorHandler";
 
 export async function search(req: Request, res: Response): Promise<void> {
@@ -15,15 +16,15 @@ export async function search(req: Request, res: Response): Promise<void> {
       RETURN n.name AS name, n.filePath AS filePath, labels(n) AS type
       LIMIT $limit
     `;
-    const graphResult = await neo4jClient.runQuery(cypher, {
+    const graphResult = await neo4jClient.runRaw(cypher, {
       repoId,
       query: q,
-      limit: parseInt(limit),
+      limit: int(parseInt(limit) || 20),
     });
-    results = graphResult.nodes.map((n) => ({
-      name: n.properties.name,
-      filePath: n.properties.filePath,
-      type: n.labels[0],
+    results = graphResult.map((r) => ({
+      name: r.name,
+      filePath: r.filePath,
+      type: (r.type as string[])[0],
     }));
   } else if (type === "file") {
     const chunks = await Chunk.find({

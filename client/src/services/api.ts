@@ -52,6 +52,9 @@ export const graphApi = {
   getArchitecture: (repoId: string) =>
     api.get("/graph/architecture", { params: { repoId } }),
 
+  getRepoGraph: (repoId: string) =>
+    api.get("/graph/repo", { params: { repoId } }),
+
   getImpact: (functionName: string, repoId: string, depth?: number) =>
     api.get("/graph/impact", { params: { function: functionName, repoId, depth } }),
 };
