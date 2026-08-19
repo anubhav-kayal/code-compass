@@ -1,5 +1,5 @@
 import { useState, FormEvent, KeyboardEvent } from "react";
-import { Send } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
@@ -25,26 +25,32 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="border-t border-gray-800 p-4 bg-gray-900">
-      <div className="flex gap-3 max-w-4xl mx-auto">
+    <form
+      onSubmit={handleSubmit}
+      className="border-t border-line bg-abyss/70 px-5 py-4 backdrop-blur-xl"
+    >
+      <div className="mx-auto flex max-w-3xl items-end gap-2 rounded-xl2 border border-line bg-panel/80 p-2 shadow-card transition-all focus-within:border-signal-500/50 focus-within:shadow-glow">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask about this codebase..."
+          placeholder="Ask about this codebase…"
           rows={1}
           disabled={disabled}
-          className="flex-1 bg-gray-800 text-gray-100 rounded-xl px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-primary-500 border border-gray-700 placeholder-gray-500"
-          style={{ minHeight: "44px", maxHeight: "120px" }}
+          className="max-h-40 min-h-[44px] flex-1 resize-none bg-transparent px-3 py-2.5 text-sm leading-relaxed text-cloud placeholder-fade focus:outline-none"
         />
         <button
           type="submit"
           disabled={!input.trim() || disabled}
-          className="px-4 py-2 bg-primary-600 text-white rounded-xl hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+          aria-label="Send message"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-signal-600 text-ink transition-all hover:bg-signal-500 disabled:cursor-not-allowed disabled:opacity-40"
         >
-          <Send size={18} />
+          <ArrowUp size={18} strokeWidth={2.4} />
         </button>
       </div>
+      <p className="mx-auto mt-2 max-w-3xl text-center text-[11px] text-fade">
+        Enter to send · Shift+Enter for a new line
+      </p>
     </form>
   );
 }

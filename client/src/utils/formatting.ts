@@ -20,3 +20,13 @@ export function formatDate(date: string | Date): string {
   if (days < 7) return `${days} days ago`;
   return d.toLocaleDateString();
 }
+
+/** Strip the ephemeral clone dir so paths read like repo paths. */
+export function shortPath(path: string): string {
+  const idx = path.lastIndexOf("/temp/repo-");
+  return idx >= 0 ? path.slice(idx + "/temp/repo-".length).split("/").slice(1).join("/") || path : path;
+}
+
+export function fileBaseName(path: string): string {
+  return path.split("/").pop() || path;
+}

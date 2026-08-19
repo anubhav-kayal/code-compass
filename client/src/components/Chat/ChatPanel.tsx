@@ -1,12 +1,20 @@
-import { useState, useRef, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { chatApi } from "../../services/api";
 import type { Message } from "../../types";
+import { CompassMark } from "../ui/CompassMark";
 
 interface ChatPanelProps {
   repoId: string;
 }
+
+const suggestions = [
+  "What's the architecture?",
+  "Explain the entry point.",
+  "Who calls the main function?",
+  "List the key functions and what they do.",
+];
 
 export function ChatPanel({ repoId }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -16,7 +24,7 @@ export function ChatPanel({ repoId }: ChatPanelProps) {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   async function handleSend(content: string) {
     const userMessage: Message = {
@@ -48,7 +56,7 @@ export function ChatPanel({ repoId }: ChatPanelProps) {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: "Sorry, I encountered an error processing your request.",
+        content: "Sorry, I hit an error answering that. The index may need a refresh — try re-indexing the repo.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -58,28 +66,47 @@ export function ChatPanel({ repoId }: ChatPanelProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.length === 0 && (
-          <div className="text-center text-gray-500 mt-20">
-            <p className="text-lg mb-2">Ask anything about this codebase</p>
-            <p className="text-sm">
-              Try: "What's the architecture?", "How does authentication work?",
-              or "Find all callers of the main function"
-            </p>
-          </div>
-        )}
-        {messages.map((msg) => (
-          <ChatMessage key={msg.id} message={msg} />
-        ))}
-        {isLoading && (
-          <div className="flex items-center gap-2 text-gray-400 ml-10">
-            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" />
-            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce delay-100" />
-            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce delay-200" />
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+    <div className="flex h-full flex-col">
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <div className="mx-auto flex max-w-3xl flex-col gap-5 px-5 py-6">
+          {messages.length === 0 && (
+            <div className="animate-fade-up py-16 text-center">
+              <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-line bg-panel/70 shadow-glow">
+                <CompassMark size={30} />
+              </div>
+              <h2 className="font-display text-2xl font-semibold text-cloud">Ask anything about this codebase</h2>
+              <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-mist">
+                Questions are answered from the indexed code with source citations you can trace.
+              </p>
+              <div className="mx-auto mt-7 flex max-w-lg flex-wrap items-center justify-center gap-2">
+                {suggestions.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handleSend(s)}
+                    disabled={isLoading}
+                    className="rounded-full border border-line bg-panel/60 px-3.5 py-1.5 font-mono text-xs text-mist transition-all hover:border-signal-500/50 hover:text-signal-300 disabled:opacity-50"
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {messages.map((msg) => (
+            <ChatMessage key={msg.id} message={msg} />
+          ))}
+
+          {isLoading && (
+            <div className="flex items-center gap-2 pl-11">
+              <span className="h-2 w-2 animate-pulse-dot rounded-full bg-signal-400" />
+              <span className="h-2 w-2 animate-pulse-dot rounded-full bg-signal-400 [animation-delay:150ms]" />
+              <span className="h-2 w-2 animate-pulse-dot rounded-full bg-signal-400 [animation-delay:300ms]" />
+            </div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
       </div>
       <ChatInput onSend={handleSend} disabled={isLoading} />
     </div>
