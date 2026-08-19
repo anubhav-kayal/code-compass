@@ -1,4 +1,4 @@
-# Code-Compass
+# Code Compass
 
 Chat with GitHub repositories using Code RAG + GraphRAG. Index any public repo, explore its code via natural language, search functions/classes/dependencies, and visualize the call graph.
 
