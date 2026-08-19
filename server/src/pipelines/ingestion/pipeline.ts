@@ -26,16 +26,17 @@ export async function runIngestionPipeline(
   const owner = match[1];
   const name = match[2].replace(".git", "");
 
-  const repo = await Repo.create({
-    githubUrl,
-    owner,
-    name,
-    defaultBranch: branch || "main",
-    languages: [],
-    totalFiles: 0,
-    totalChunks: 0,
-    status: "indexing",
-  });
+  const repo = await Repo.findOneAndUpdate(
+    { githubUrl },
+    {
+      githubUrl,
+      owner,
+      name,
+      defaultBranch: branch || "main",
+      status: "indexing",
+    },
+    { new: true, upsert: true }
+  );
 
   const job = await IndexJob.create({
     repoId: repo._id,
@@ -62,18 +63,11 @@ export async function runIngestionPipeline(
     });
 
     const chunks = chunkCode(parsedFiles, repo._id.toString());
-    await Chunk.insertMany(chunks);
-    await Repo.findByIdAndUpdate(repo._id, { totalChunks: chunks.length });
-    await IndexJob.findByIdAndUpdate(job._id, {
-      $set: { "stages.chunk": "completed", "stages.embed": "running", progress: 70 },
-    });
-
     const chunkedWithEmbeddings = await embedChunks(chunks);
-    for (const c of chunkedWithEmbeddings) {
-      await Chunk.findByIdAndUpdate(c._id, { embedding: c.embedding });
-    }
+    await Chunk.insertMany(chunkedWithEmbeddings);
+    await Repo.findByIdAndUpdate(repo._id, { totalChunks: chunkedWithEmbeddings.length });
     await IndexJob.findByIdAndUpdate(job._id, {
-      $set: { "stages.embed": "completed", "stages.graph": "running", progress: 85 },
+      $set: { "stages.chunk": "completed", "stages.embed": "completed", "stages.graph": "running", progress: 85 },
     });
 
     await neo4jClient.clearRepo(repo._id.toString());
@@ -86,6 +80,7 @@ export async function runIngestionPipeline(
       status: "ready",
       totalFiles: files.length,
       lastIndexedAt: new Date(),
+      error: null,
     });
     await IndexJob.findByIdAndUpdate(job._id, {
       status: "completed",

@@ -73,8 +73,8 @@ export async function buildGraph(
       }
     }
 
-    resolveCrossFileCalls(session, repoId);
-    resolveImportTargets(session, repoId);
+    await resolveCrossFileCalls(session, repoId);
+    await resolveImportTargets(session, repoId);
 
     logger.info("Graph built successfully", { repoId, files: parsedFiles.length });
   } finally {

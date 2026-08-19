@@ -50,6 +50,19 @@ export class Neo4jClient {
     }
   }
 
+  async runRaw(
+    cypher: string,
+    params: Record<string, unknown> = {}
+  ): Promise<Record<string, unknown>[]> {
+    const session = this.driver.session();
+    try {
+      const result = await session.run(cypher, params);
+      return result.records.map((r) => r.toObject());
+    } finally {
+      await session.close();
+    }
+  }
+
   async createConstraints(): Promise<void> {
     const session = this.driver.session();
     try {

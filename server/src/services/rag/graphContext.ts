@@ -1,11 +1,12 @@
 import { neo4jClient } from "../neo4j";
+import { int } from "neo4j-driver";
 import { CallGraphQuery } from "../../types";
 
 export async function getFunctionContext(query: CallGraphQuery): Promise<string> {
   const { functionName, repoId, direction, depth = 2 } = query;
 
   let cypher = "";
-  const params: Record<string, unknown> = { name: functionName, repoId, depth };
+  const params: Record<string, unknown> = { name: functionName, repoId, depth: int(depth) };
 
   if (direction === "callers" || direction === "both") {
     cypher += `
@@ -25,9 +26,9 @@ export async function getFunctionContext(query: CallGraphQuery): Promise<string>
   if (!cypher) return "";
 
   try {
-    const result = await neo4jClient.runQuery(cypher, params);
-    return result.nodes
-      .map((n) => `  ${n.properties.name} (${n.properties.filePath})`)
+    const records = await neo4jClient.runRaw(cypher, params);
+    return records
+      .map((r) => `  ${r.name} (${r.filePath})`)
       .join("\n");
   } catch {
     return "";
@@ -42,11 +43,11 @@ export async function getArchitectureSummary(repoId: string): Promise<string> {
   `;
 
   try {
-    const result = await neo4jClient.runQuery(cypher, { repoId });
-    return result.nodes
+    const records = await neo4jClient.runRaw(cypher, { repoId });
+    return records
       .map(
-        (n) =>
-          `${n.properties.file}: ${(n.properties.functions as string[])?.join(", ") || "none"}`
+        (r) =>
+          `${r.file}: ${(r.functions as string[])?.join(", ") || "none"}`
       )
       .join("\n");
   } catch {
@@ -65,11 +66,11 @@ export async function getDependencyChain(
   `;
 
   try {
-    const result = await neo4jClient.runQuery(cypher, { path: filePath, repoId });
-    return result.nodes
+    const records = await neo4jClient.runRaw(cypher, { path: filePath, repoId });
+    return records
       .map(
-        (n) =>
-          `  ${n.properties.module} -> ${n.properties.resolved || "unresolved"}`
+        (r) =>
+          `  ${r.module} -> ${r.resolved || "unresolved"}`
       )
       .join("\n");
   } catch {

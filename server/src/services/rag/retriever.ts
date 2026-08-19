@@ -21,7 +21,21 @@ export async function hybridRetrieve(options: RetrievalOptions): Promise<SourceC
     {
       $addFields: {
         similarity: {
-          $dotProduct: ["$embedding", queryEmbedding],
+          $reduce: {
+            input: { $zip: { inputs: ["$embedding", queryEmbedding] } },
+            initialValue: 0,
+            in: {
+              $add: [
+                "$$value",
+                {
+                  $multiply: [
+                    { $arrayElemAt: ["$$this", 0] },
+                    { $arrayElemAt: ["$$this", 1] },
+                  ],
+                },
+              ],
+            },
+          },
         },
       },
     },

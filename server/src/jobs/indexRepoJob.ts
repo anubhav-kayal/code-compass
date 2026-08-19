@@ -35,13 +35,17 @@ export async function queueIndexJob(
   const match = githubUrl.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?$/);
   if (!match) throw new Error("Invalid GitHub URL");
 
-  const repo = await Repo.create({
-    githubUrl,
-    owner: match[1],
-    name: match[2].replace(".git", ""),
-    defaultBranch: branch || "main",
-    status: "pending",
-  });
+  const repo = await Repo.findOneAndUpdate(
+    { githubUrl },
+    {
+      githubUrl,
+      owner: match[1],
+      name: match[2].replace(".git", ""),
+      defaultBranch: branch || "main",
+      status: "pending",
+    },
+    { new: true, upsert: true }
+  );
 
   const job = await indexQueue.add({
     githubUrl,

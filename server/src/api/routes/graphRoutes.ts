@@ -16,4 +16,5 @@ graphRoutes.get("/callers", validate(functionQuerySchema, "query"), asyncHandler
 graphRoutes.get("/callees", validate(functionQuerySchema, "query"), asyncHandler(graphController.getCallees));
 graphRoutes.get("/dependencies", asyncHandler(graphController.getDependencies));
 graphRoutes.get("/architecture", asyncHandler(graphController.getArchitecture));
+graphRoutes.get("/repo", asyncHandler(graphController.getRepoGraph));
 graphRoutes.get("/impact", validate(functionQuerySchema, "query"), asyncHandler(graphController.getImpact));

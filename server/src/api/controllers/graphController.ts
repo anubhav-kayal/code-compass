@@ -35,6 +35,40 @@ export async function getArchitecture(req: Request, res: Response): Promise<void
   res.json({ success: true, data: result });
 }
 
+export async function getRepoGraph(req: Request, res: Response): Promise<void> {
+  const { repoId } = req.query as Record<string, string>;
+  if (!repoId) throw new AppError(400, "repoId is required");
+
+  const nodesResult = await neo4jClient.runQuery(
+    "MATCH (n {repoId: $repoId}) RETURN n",
+    { repoId }
+  );
+  const relsResult = await neo4jClient.runQuery(
+    "MATCH (a {repoId: $repoId})-[r]->(b {repoId: $repoId}) RETURN r",
+    { repoId }
+  );
+
+  const nodes = nodesResult.nodes.map((n) => ({
+    id: n.id,
+    label: String(
+      n.properties.name || n.properties.path || n.properties.source || n.id
+    ),
+    type: (n.labels[0] || "Node").toLowerCase(),
+    filePath: (n.properties.filePath as string) || undefined,
+    startLine: (n.properties.startLine as number) || undefined,
+    signature: (n.properties.signature as string) || undefined,
+    language: (n.properties.language as string) || undefined,
+  }));
+
+  const edges = relsResult.relationships.map((r) => ({
+    from: r.startNode.id,
+    to: r.endNode.id,
+    type: r.type.toLowerCase(),
+  }));
+
+  res.json({ success: true, data: { nodes, edges } });
+}
+
 export async function getImpact(req: Request, res: Response): Promise<void> {
   const { function: functionName, repoId, depth } = req.query as Record<string, string>;
   const result = await getFunctionContext({
