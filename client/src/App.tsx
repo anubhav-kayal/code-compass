@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Sidebar } from "./components/Layout/Sidebar";
 import { Header } from "./components/Layout/Header";
+import { AppLayout } from "./components/Layout/AppLayout";
 import { ChatPanel } from "./components/Chat/ChatPanel";
-import { RepoInput } from "./components/RepoManager/RepoInput";
+import { LandingHero } from "./components/Landing/LandingHero";
+import { GraphView } from "./components/GraphView/GraphView";
+import { RepoManager } from "./components/Settings/RepoManager";
 import { SearchBar } from "./components/Search/SearchBar";
 
 type View = "chat" | "search" | "graph" | "settings";
@@ -10,41 +13,57 @@ type View = "chat" | "search" | "graph" | "settings";
 function App() {
   const [activeView, setActiveView] = useState<View>("chat");
   const [activeRepoId, setActiveRepoId] = useState<string | null>(null);
+  const [repoVersion, setRepoVersion] = useState(0);
+
+  function selectRepo(id: string) {
+    setActiveRepoId(id);
+    setActiveView("chat");
+  }
+
+  function showLanding() {
+    setActiveRepoId(null);
+    setActiveView("chat");
+    setRepoVersion((v) => v + 1);
+  }
 
   return (
-    <div className="flex h-screen bg-gray-950 text-gray-100">
-      <Sidebar activeView={activeView} onViewChange={setActiveView} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <Header activeRepoId={activeRepoId} onRepoChange={setActiveRepoId} />
-        <main className="flex-1 overflow-hidden">
-          {!activeRepoId ? (
-            <div className="h-full flex items-center justify-center">
-              <div className="max-w-lg w-full px-6">
-                <h1 className="text-3xl font-bold text-center mb-8 text-white">Code-Compass</h1>
-                <p className="text-gray-400 text-center mb-8">
-                  Index any GitHub repo and explore its code with AI-powered chat, search, and dependency graphs.
-                </p>
-                <RepoInput onRepoIndexed={(id) => setActiveRepoId(id)} />
-              </div>
-            </div>
-          ) : (
-            <div className="h-full">
-              {activeView === "chat" && <ChatPanel repoId={activeRepoId} />}
-              {activeView === "search" && (
-                <div className="p-6">
-                  <SearchBar repoId={activeRepoId} />
-                </div>
-              )}
-              {activeView === "graph" && (
-                <div className="p-6 h-full">
-                  <p className="text-gray-400">Graph view coming soon...</p>
-                </div>
-              )}
+<AppLayout
+        sidebar={<Sidebar activeView={activeView} onViewChange={setActiveView} />}
+        header={
+          <Header
+            activeRepoId={activeRepoId}
+            onRepoChange={(id) => (id ? selectRepo(id) : showLanding())}
+            onNewRepo={showLanding}
+            refreshSignal={repoVersion}
+          />
+        }
+      >
+      {!activeRepoId ? (
+        <LandingHero
+          key={repoVersion}
+          onRepoSelected={selectRepo}
+          onIndexed={() => setRepoVersion((v) => v + 1)}
+        />
+      ) : (
+        <div className="h-full animate-fade-in">
+          {activeView === "chat" && <ChatPanel key={activeRepoId} repoId={activeRepoId} />}
+          {activeView === "search" && (
+            <div className="h-full overflow-y-auto p-6">
+              <SearchBar repoId={activeRepoId} />
             </div>
           )}
-        </main>
-      </div>
-    </div>
+          {activeView === "graph" && <GraphView key={activeRepoId} repoId={activeRepoId} />}
+          {activeView === "settings" && (
+            <RepoManager
+              key={repoVersion}
+              activeRepoId={activeRepoId}
+              onSelectRepo={selectRepo}
+              onRepoChange={() => setRepoVersion((v) => v + 1)}
+            />
+          )}
+        </div>
+      )}
+    </AppLayout>
   );
 }
 

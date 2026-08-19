@@ -1,61 +1,25 @@
-import { useEffect, useState } from "react";
-import { repoApi } from "../../services/api";
-import type { Repo } from "../../types";
+import { RepoSwitcher } from "../ui/RepoSwitcher";
 
 interface HeaderProps {
   activeRepoId: string | null;
   onRepoChange: (id: string | null) => void;
+  onNewRepo: () => void;
+  refreshSignal?: number;
 }
 
-export function Header({ activeRepoId, onRepoChange }: HeaderProps) {
-  const [repos, setRepos] = useState<Repo[]>([]);
-  const [currentRepo, setCurrentRepo] = useState<Repo | null>(null);
-
-  useEffect(() => {
-    repoApi.listRepos().then((res) => setRepos(res.data.data || []));
-  }, []);
-
-  useEffect(() => {
-    if (activeRepoId) {
-      repoApi.getRepo(activeRepoId).then((res) => setCurrentRepo(res.data.data));
-    } else {
-      setCurrentRepo(null);
-    }
-  }, [activeRepoId]);
-
+export function Header({ activeRepoId, onRepoChange, onNewRepo, refreshSignal = 0 }: HeaderProps) {
   return (
-    <header className="h-14 bg-gray-900 border-b border-gray-800 flex items-center px-4 gap-4">
-      <select
-        value={activeRepoId || ""}
-        onChange={(e) => onRepoChange(e.target.value || null)}
-        className="bg-gray-800 text-gray-100 border border-gray-700 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-primary-500 max-w-xs"
-      >
-        <option value="">Select a repository...</option>
-        {repos.map((repo) => (
-          <option key={repo._id} value={repo._id}>
-            {repo.owner}/{repo.name}
-          </option>
-        ))}
-      </select>
-
-      {currentRepo && (
-        <div className="flex items-center gap-3 text-sm text-gray-400 ml-auto">
-          <span className="flex items-center gap-1">
-            <span
-              className={`w-2 h-2 rounded-full ${
-                currentRepo.status === "ready"
-                  ? "bg-green-500"
-                  : currentRepo.status === "indexing"
-                  ? "bg-yellow-500"
-                  : "bg-red-500"
-              }`}
-            />
-            {currentRepo.status}
-          </span>
-          <span>{currentRepo.totalChunks} chunks</span>
-          <span>{currentRepo.totalFiles} files</span>
-        </div>
-      )}
+    <header className="relative z-10 flex items-center gap-4 border-b border-line bg-abyss/60 px-5 py-3 backdrop-blur-xl">
+      <div className="flex items-center gap-3">
+        <span className="font-display text-sm font-semibold tracking-tight text-cloud">
+          Code<span className="text-signal-400">Compass</span>
+        </span>
+        <span className="hidden rounded-full border border-line bg-panel px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-mist md:inline">
+          Alpha
+        </span>
+      </div>
+      <div className="mx-auto" />
+      <RepoSwitcher activeRepoId={activeRepoId} onRepoChange={onRepoChange} onNewRepo={onNewRepo} refreshSignal={refreshSignal} />
     </header>
   );
 }
