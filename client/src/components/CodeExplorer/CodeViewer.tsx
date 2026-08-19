@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import { oneDark } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import oneDark from "react-syntax-highlighter/dist/esm/styles/hljs/atom-one-dark";
 
 interface CodeViewerProps {
   content: string;
