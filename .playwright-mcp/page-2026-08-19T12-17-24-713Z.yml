@@ -1,0 +1,79 @@
+- generic [ref=f45e3]:
+  - complementary [ref=f45e4]:
+    - navigation [ref=f45e12]:
+      - button "Chat" [ref=f45e13] [cursor=pointer]
+      - button "Search" [ref=f45e17] [cursor=pointer]
+      - button "Graph" [ref=f45e21] [cursor=pointer]
+      - button "Repositories" [ref=f45e27] [cursor=pointer]
+    - link "Code-Compass" [ref=f45e31] [cursor=pointer]:
+      - /url: https://github.com
+  - generic [ref=f45e35]:
+    - banner [ref=f45e36]:
+      - generic [ref=f45e37]:
+        - generic [ref=f45e38]: CodeCompass
+        - generic [ref=f45e39]: Alpha
+      - button "sindresorhus/random-int Ready · 4 files · 4 chunks" [ref=f45e127] [cursor=pointer]:
+        - generic [ref=f45e129]:
+          - generic [ref=f45e130]: sindresorhus/random-int
+          - generic [ref=f45e131]: Ready · 4 files · 4 chunks
+    - main [ref=f45e46]:
+      - generic [ref=f45e319]:
+        - generic [ref=f45e320]:
+          - textbox "Search code, files, symbols…" [ref=f45e324]: randomInteger
+          - generic [ref=f45e325]:
+            - button "Code" [ref=f45e326] [cursor=pointer]
+            - button "Files" [ref=f45e331] [cursor=pointer]
+            - button "Symbols" [ref=f45e335] [cursor=pointer]
+          - button "Search" [ref=f45e339] [cursor=pointer]
+        - generic [ref=f45e348]:
+          - generic [ref=f45e349]:
+            - paragraph [ref=f45e350]: 8 results
+            - 'button "code index.js :1-18 export default function randomInteger(minimum, maximum) { if (maximum === undefined) { maximum = minimum; minimum = 0; } if (typeof minimum !== ''number'' || typeof maximum !== ''number'') { throw new TypeError(''Ex" [ref=f45e351] [cursor=pointer]':
+              - generic [ref=f45e352]:
+                - generic [ref=f45e353]: code
+                - generic [ref=f45e354]: index.js
+                - generic [ref=f45e355]: :1-18
+              - generic [ref=f45e356]: "export default function randomInteger(minimum, maximum) { if (maximum === undefined) { maximum = minimum; minimum = 0; } if (typeof minimum !== 'number' || typeof maximum !== 'number') { throw new TypeError('Ex"
+            - 'button "code index.js :1-18 export default function randomInteger(minimum, maximum) { if (maximum === undefined) { maximum = minimum; minimum = 0; } if (typeof minimum !== ''number'' || typeof maximum !== ''number'') { throw new TypeError(''Ex" [ref=f45e359] [cursor=pointer]':
+              - generic [ref=f45e360]:
+                - generic [ref=f45e361]: code
+                - generic [ref=f45e362]: index.js
+                - generic [ref=f45e363]: :1-18
+              - generic [ref=f45e364]: "export default function randomInteger(minimum, maximum) { if (maximum === undefined) { maximum = minimum; minimum = 0; } if (typeof minimum !== 'number' || typeof maximum !== 'number') { throw new TypeError('Ex"
+            - 'button "code index.test-d.ts :1-7 import {expectType} from ''tsd''; import randomInteger from ''./index.js''; expectType<number>(randomInteger()); expectType<number>(randomInteger(5)); expectType<number>(randomInteger(10, 100));" [ref=f45e367] [cursor=pointer]':
+              - generic [ref=f45e368]:
+                - generic [ref=f45e369]: code
+                - generic [ref=f45e370]: index.test-d.ts
+                - generic [ref=f45e371]: :1-7
+              - generic [ref=f45e372]: "import {expectType} from 'tsd'; import randomInteger from './index.js'; expectType<number>(randomInteger()); expectType<number>(randomInteger(5)); expectType<number>(randomInteger(10, 100));"
+            - 'button "code index.test-d.ts :1-7 import {expectType} from ''tsd''; import randomInteger from ''./index.js''; expectType<number>(randomInteger()); expectType<number>(randomInteger(5)); expectType<number>(randomInteger(10, 100));" [ref=f45e375] [cursor=pointer]':
+              - generic [ref=f45e376]:
+                - generic [ref=f45e377]: code
+                - generic [ref=f45e378]: index.test-d.ts
+                - generic [ref=f45e379]: :1-7
+              - generic [ref=f45e380]: "import {expectType} from 'tsd'; import randomInteger from './index.js'; expectType<number>(randomInteger()); expectType<number>(randomInteger(5)); expectType<number>(randomInteger(10, 100));"
+            - 'button "code test.js :6-11 const inRangeCheck = ({start, end}) => stableFunction(() => inRange(randomInteger(start, end), {start, end})); test(''main'', t => { t.true(Number.isInteger(randomInteger(0, 10))); t.false(stableFunction(() => randomInt" [ref=f45e383] [cursor=pointer]':
+              - generic [ref=f45e384]:
+                - generic [ref=f45e385]: code
+                - generic [ref=f45e386]: test.js
+                - generic [ref=f45e387]: :6-11
+              - generic [ref=f45e388]: "const inRangeCheck = ({start, end}) => stableFunction(() => inRange(randomInteger(start, end), {start, end})); test('main', t => { t.true(Number.isInteger(randomInteger(0, 10))); t.false(stableFunction(() => randomInt"
+            - 'button "code test.js :6-11 const inRangeCheck = ({start, end}) => stableFunction(() => inRange(randomInteger(start, end), {start, end})); test(''main'', t => { t.true(Number.isInteger(randomInteger(0, 10))); t.false(stableFunction(() => randomInt" [ref=f45e391] [cursor=pointer]':
+              - generic [ref=f45e392]:
+                - generic [ref=f45e393]: code
+                - generic [ref=f45e394]: test.js
+                - generic [ref=f45e395]: :6-11
+              - generic [ref=f45e396]: "const inRangeCheck = ({start, end}) => stableFunction(() => inRange(randomInteger(start, end), {start, end})); test('main', t => { t.true(Number.isInteger(randomInteger(0, 10))); t.false(stableFunction(() => randomInt"
+            - 'button "code index.d.ts :1-22 /** Generate a random integer. If `minimum` is greater than `maximum`, the values are swapped to return an integer from the lower value to the higher value. @param minimum - Minimum integer to return. Default: `0`. @pa" [ref=f45e399] [cursor=pointer]':
+              - generic [ref=f45e400]:
+                - generic [ref=f45e401]: code
+                - generic [ref=f45e402]: index.d.ts
+                - generic [ref=f45e403]: :1-22
+              - generic [ref=f45e404]: "/** Generate a random integer. If `minimum` is greater than `maximum`, the values are swapped to return an integer from the lower value to the higher value. @param minimum - Minimum integer to return. Default: `0`. @pa"
+            - 'button "code index.d.ts :1-22 /** Generate a random integer. If `minimum` is greater than `maximum`, the values are swapped to return an integer from the lower value to the higher value. @param minimum - Minimum integer to return. Default: `0`. @pa" [ref=f45e407] [cursor=pointer]':
+              - generic [ref=f45e408]:
+                - generic [ref=f45e409]: code
+                - generic [ref=f45e410]: index.d.ts
+                - generic [ref=f45e411]: :1-22
+              - generic [ref=f45e412]: "/** Generate a random integer. If `minimum` is greater than `maximum`, the values are swapped to return an integer from the lower value to the higher value. @param minimum - Minimum integer to return. Default: `0`. @pa"
+          - generic [ref=f45e415]: Select a result to preview the code

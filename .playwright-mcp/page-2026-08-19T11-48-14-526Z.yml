@@ -1,0 +1,19 @@
+- generic [ref=f4e3]:
+  - complementary [ref=f4e4]:
+    - generic [ref=f4e5]: CC
+    - button "Chat" [ref=f4e7] [cursor=pointer]
+    - button "Search" [ref=f4e10] [cursor=pointer]
+    - button "Graph" [active] [ref=f4e14] [cursor=pointer]
+    - button "Settings" [ref=f4e19] [cursor=pointer]
+  - generic [ref=f4e23]:
+    - banner [ref=f4e24]:
+      - combobox [ref=f4e25]:
+        - option "Select a repository..."
+        - option "sindresorhus/random-int" [selected]
+        - option "sindresorhus/is-odd"
+      - generic [ref=f4e52]:
+        - generic [ref=f4e53]: ready
+        - generic [ref=f4e55]: 4 chunks
+        - generic [ref=f4e56]: 4 files
+    - main [ref=f4e26]:
+      - paragraph [ref=f4e58]: Graph view coming soon...

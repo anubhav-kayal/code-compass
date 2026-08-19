@@ -1,0 +1,41 @@
+- generic [ref=f5e3]:
+  - complementary [ref=f5e4]:
+    - generic [ref=f5e5]: CC
+    - button "Chat" [ref=f5e7] [cursor=pointer]
+    - button "Search" [ref=f5e10] [cursor=pointer]
+    - button "Graph" [ref=f5e14] [cursor=pointer]
+    - button "Settings" [ref=f5e19] [cursor=pointer]
+  - generic [ref=f5e23]:
+    - banner [ref=f5e24]:
+      - combobox [ref=f5e25]:
+        - option "Select a repository..."
+        - option "sindresorhus/random-int" [selected]
+        - option "sindresorhus/is-odd"
+      - generic [ref=f5e26]:
+        - generic [ref=f5e27]: ready
+        - generic [ref=f5e29]: 4 chunks
+        - generic [ref=f5e30]: 4 files
+    - main [ref=f5e31]:
+      - generic [ref=f5e53]:
+        - generic [ref=f5e54]:
+          - generic [ref=f5e66]:
+            - paragraph [ref=f5e68]: What does inRangeChe
+            - paragraph [ref=f5e69]: 17:19:59
+          - generic [ref=f5e75]:
+            - paragraph [ref=f5e77]: "The `inRangeCheck` function is not defined in the provided code snippets. However, I can infer its behavior based on the usage in the tests. The `inRangeCheck` function appears to be a wrapper around the `inRange` function, which takes two arguments: a value and an object with `start` and `end` properties. The `inRangeCheck` function seems to be a test helper function that wraps the `inRange` function with a `stableFunction` wrapper, which is not shown in the provided code snippets. The `inRange` function is likely defined elsewhere in the codebase, possibly in a file like `utils.js` or `math.js`. Without more information, I couldn't pinpoint the exact file path and line number where `inRange` is defined. However, I can suggest that you check the `utils.js` or `math.js` file for the definition of `inRange`, which is likely to be the function being used in the `inRangeCheck` function. If you provide more context or information about the `inRange` function, I may be able to provide a more specific answer."
+            - generic [ref=f5e78]:
+              - paragraph [ref=f5e79]: "Sources:"
+              - link "/Users/anubhavkayal/code-compass/server/temp/repo-1787140067104/test.js :6-11 64%" [ref=f5e80] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f5e86]: /Users/anubhavkayal/code-compass/server/temp/repo-1787140067104/test.js
+                - generic [ref=f5e87]: :6-11
+                - generic [ref=f5e88]: 64%
+              - link "/Users/anubhavkayal/code-compass/server/temp/repo-1787139887574/test.js :6-11 64%" [ref=f5e89] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=f5e95]: /Users/anubhavkayal/code-compass/server/temp/repo-1787139887574/test.js
+                - generic [ref=f5e96]: :6-11
+                - generic [ref=f5e97]: 64%
+            - paragraph [ref=f5e98]: 17:20:09
+        - generic [ref=f5e59]:
+          - textbox "Ask about this codebase..." [ref=f5e60]
+          - button [disabled] [ref=f5e61]

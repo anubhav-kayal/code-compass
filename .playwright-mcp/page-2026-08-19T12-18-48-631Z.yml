@@ -1,0 +1,45 @@
+- generic [ref=f45e3]:
+  - complementary [ref=f45e4]:
+    - navigation [ref=f45e12]:
+      - button "Chat" [ref=f45e13] [cursor=pointer]
+      - button "Search" [ref=f45e17] [cursor=pointer]
+      - button "Graph" [active] [ref=f45e21] [cursor=pointer]
+      - button "Repositories" [ref=f45e27] [cursor=pointer]
+    - link "Code-Compass" [ref=f45e31] [cursor=pointer]:
+      - /url: https://github.com
+  - generic [ref=f45e35]:
+    - banner [ref=f45e36]:
+      - generic [ref=f45e37]:
+        - generic [ref=f45e38]: CodeCompass
+        - generic [ref=f45e39]: Alpha
+      - button "Select a repository…" [ref=f45e600] [cursor=pointer]
+    - main [ref=f45e46]:
+      - generic [ref=f45e703]:
+        - heading "Map any codebase, in plain language" [level=1] [ref=f45e712]: Map any codebase,in plain language
+        - paragraph [ref=f45e713]: Index a GitHub repository, then chat with it, search its functions, and explore the call graph — all without reading a line.
+        - generic [ref=f45e714]:
+          - generic [ref=f45e715]:
+            - textbox "https://github.com/owner/repo" [ref=f45e716]
+            - button "Index" [disabled] [ref=f45e717]
+          - paragraph [ref=f45e723]: Clones · parses · embeds · maps the call graph — then answers your questions.
+        - generic [ref=f45e727]:
+          - generic [ref=f45e728]: Try asking
+          - generic [ref=f45e729]: What's the architecture?
+          - generic [ref=f45e730]: Explain the entry point.
+          - generic [ref=f45e731]: How does auth work here?
+          - generic [ref=f45e732]: Who calls the main function?
+        - generic [ref=f45e733]:
+          - generic [ref=f45e734]: Recently indexed
+          - generic [ref=f45e738]:
+            - button "anubhav-kayal/SimuCFO 66 files · 209 chunks · Today" [ref=f45e739] [cursor=pointer]:
+              - generic [ref=f45e745]:
+                - generic [ref=f45e746]: anubhav-kayal/SimuCFO
+                - generic [ref=f45e747]: 66 files · 209 chunks · Today
+            - button "sindresorhus/random-int 4 files · 4 chunks · Today" [ref=f45e750] [cursor=pointer]:
+              - generic [ref=f45e756]:
+                - generic [ref=f45e757]: sindresorhus/random-int
+                - generic [ref=f45e758]: 4 files · 4 chunks · Today
+            - button "sindresorhus/is-odd indexing" [ref=f45e761] [cursor=pointer]:
+              - generic [ref=f45e767]:
+                - generic [ref=f45e768]: sindresorhus/is-odd
+                - generic [ref=f45e769]: indexing

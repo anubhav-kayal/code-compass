@@ -1,0 +1,59 @@
+- generic [ref=f45e3]:
+  - complementary [ref=f45e4]:
+    - navigation [ref=f45e12]:
+      - button "Chat" [ref=f45e13] [cursor=pointer]
+      - button "Search" [ref=f45e17] [cursor=pointer]
+      - button "Graph" [ref=f45e21] [cursor=pointer]
+      - button "Repositories" [ref=f45e27] [cursor=pointer]
+    - link "Code-Compass" [ref=f45e31] [cursor=pointer]:
+      - /url: https://github.com
+  - generic [ref=f45e35]:
+    - banner [ref=f45e36]:
+      - generic [ref=f45e37]:
+        - generic [ref=f45e38]: CodeCompass
+        - generic [ref=f45e39]: Alpha
+      - generic [ref=f45e40]:
+        - button "Select a repository…" [active] [ref=f45e600] [cursor=pointer]
+        - generic [ref=f45e682]:
+          - paragraph [ref=f45e683]: Repositories
+          - generic [ref=f45e684]:
+            - generic [ref=f45e687] [cursor=pointer]:
+              - generic [ref=f45e688]: anubhav-kayal/SimuCFO
+              - generic [ref=f45e689]: Ready · javascript, python, typescript
+            - generic [ref=f45e692] [cursor=pointer]:
+              - generic [ref=f45e693]: sindresorhus/random-int
+              - generic [ref=f45e694]: Ready · typescript, javascript
+            - generic [ref=f45e697] [cursor=pointer]:
+              - generic [ref=f45e698]: sindresorhus/is-odd
+              - generic [ref=f45e699]: Failed
+          - button "Index a new repository" [ref=f45e700] [cursor=pointer]
+    - main [ref=f45e46]:
+      - generic [ref=f45e603]:
+        - heading "Map any codebase, in plain language" [level=1] [ref=f45e612]: Map any codebase,in plain language
+        - paragraph [ref=f45e613]: Index a GitHub repository, then chat with it, search its functions, and explore the call graph — all without reading a line.
+        - generic [ref=f45e614]:
+          - generic [ref=f45e615]:
+            - textbox "https://github.com/owner/repo" [ref=f45e616]
+            - button "Index" [disabled] [ref=f45e617]
+          - paragraph [ref=f45e623]: Clones · parses · embeds · maps the call graph — then answers your questions.
+        - generic [ref=f45e627]:
+          - generic [ref=f45e628]: Try asking
+          - generic [ref=f45e629]: What's the architecture?
+          - generic [ref=f45e630]: Explain the entry point.
+          - generic [ref=f45e631]: How does auth work here?
+          - generic [ref=f45e632]: Who calls the main function?
+        - generic [ref=f45e633]:
+          - generic [ref=f45e634]: Recently indexed
+          - generic [ref=f45e638]:
+            - button "anubhav-kayal/SimuCFO 66 files · 209 chunks · Today" [ref=f45e639] [cursor=pointer]:
+              - generic [ref=f45e645]:
+                - generic [ref=f45e646]: anubhav-kayal/SimuCFO
+                - generic [ref=f45e647]: 66 files · 209 chunks · Today
+            - button "sindresorhus/random-int 4 files · 4 chunks · Today" [ref=f45e650] [cursor=pointer]:
+              - generic [ref=f45e656]:
+                - generic [ref=f45e657]: sindresorhus/random-int
+                - generic [ref=f45e658]: 4 files · 4 chunks · Today
+            - button "sindresorhus/is-odd indexing" [ref=f45e661] [cursor=pointer]:
+              - generic [ref=f45e667]:
+                - generic [ref=f45e668]: sindresorhus/is-odd
+                - generic [ref=f45e669]: indexing

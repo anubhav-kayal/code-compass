@@ -1,0 +1,33 @@
+- generic [ref=f46e3]:
+  - complementary [ref=f46e4]:
+    - navigation [ref=f46e12]:
+      - button "Chat" [ref=f46e13] [cursor=pointer]
+      - button "Search" [ref=f46e17] [cursor=pointer]
+      - button "Graph" [ref=f46e21] [cursor=pointer]
+      - button "Repositories" [ref=f46e27] [cursor=pointer]
+    - link "Code-Compass" [ref=f46e31] [cursor=pointer]:
+      - /url: https://github.com
+  - generic [ref=f46e35]:
+    - banner [ref=f46e36]:
+      - generic [ref=f46e37]:
+        - generic [ref=f46e38]: CodeCompass
+        - generic [ref=f46e39]: Alpha
+      - button "sindresorhus/random-int Ready · 4 files · 4 chunks" [ref=f46e147] [cursor=pointer]:
+        - generic [ref=f46e149]:
+          - generic [ref=f46e150]: sindresorhus/random-int
+          - generic [ref=f46e151]: Ready · 4 files · 4 chunks
+    - main [ref=f46e46]:
+      - generic [ref=f46e153]:
+        - generic [ref=f46e156]:
+          - heading "Ask anything about this codebase" [level=2] [ref=f46e164]
+          - paragraph [ref=f46e165]: Questions are answered from the indexed code with source citations you can trace.
+          - generic [ref=f46e166]:
+            - button "What's the architecture?" [ref=f46e167] [cursor=pointer]
+            - button "Explain the entry point." [ref=f46e168] [cursor=pointer]
+            - button "Who calls the main function?" [ref=f46e169] [cursor=pointer]
+            - button "List the key functions and what they do." [ref=f46e170] [cursor=pointer]
+        - generic [ref=f46e171]:
+          - generic [ref=f46e172]:
+            - textbox "Ask about this codebase…" [ref=f46e173]
+            - button "Send message" [disabled] [ref=f46e174]
+          - paragraph [ref=f46e177]: Enter to send · Shift+Enter for a new line
