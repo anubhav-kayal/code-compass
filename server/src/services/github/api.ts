@@ -1,4 +1,5 @@
 import { config } from "../../config";
+import { parseGithubUrl } from "../../utils/githubUrl";
 
 export interface GitHubRepoInfo {
   owner: string;
@@ -8,14 +9,19 @@ export interface GitHubRepoInfo {
   description: string;
 }
 
+interface GitHubRepoApiResponse {
+  default_branch?: string;
+  description?: string | null;
+}
+
 export async function getRepoInfo(githubUrl: string): Promise<GitHubRepoInfo> {
-  const match = githubUrl.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?$/);
-  if (!match) {
+  const ref = parseGithubUrl(githubUrl);
+  if (!ref) {
     throw new Error("Invalid GitHub URL");
   }
 
-  const owner = match[1];
-  const name = match[2].replace(".git", "");
+  const owner = ref.owner;
+  const name = ref.name;
 
   const headers: Record<string, string> = {
     Accept: "application/vnd.github.v3+json",
@@ -33,8 +39,8 @@ export async function getRepoInfo(githubUrl: string): Promise<GitHubRepoInfo> {
     throw new Error(`GitHub API error: ${repoRes.statusText}`);
   }
 
-  const repoData = await repoRes.json();
-  const langsData = await langsRes.json();
+  const repoData = (await repoRes.json()) as GitHubRepoApiResponse;
+  const langsData = (await langsRes.json()) as Record<string, number>;
 
   return {
     owner,

@@ -1,15 +1,19 @@
 import { Request } from "express";
+import crypto from "crypto";
 import { config } from "../../config";
 
 export function verifyWebhookSignature(req: Request, payload: string): boolean {
   const signature = req.headers["x-hub-signature-256"] as string;
   if (!signature || !config.github.webhookSecret) return false;
 
-  const crypto = require("crypto");
   const hmac = crypto.createHmac("sha256", config.github.webhookSecret);
   const digest = `sha256=${hmac.update(payload).digest("hex")}`;
 
-  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(digest));
+  const sigBuf = Buffer.from(signature);
+  const digestBuf = Buffer.from(digest);
+  if (sigBuf.length !== digestBuf.length) return false;
+
+  return crypto.timingSafeEqual(sigBuf, digestBuf);
 }
 
 export function parseWebhookEvent(req: Request): {
