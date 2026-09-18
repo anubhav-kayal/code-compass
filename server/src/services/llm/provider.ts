@@ -59,13 +59,24 @@ export async function* streamChatCompletion(
   }
 }
 
+/**
+ * L2-normalizes an embedding so a plain dot product against another
+ * normalized vector equals cosine similarity — lets retrieval avoid an
+ * expensive magnitude computation per comparison at query time.
+ */
+export function normalizeVector(vector: number[]): number[] {
+  const magnitude = Math.sqrt(vector.reduce((sum, v) => sum + v * v, 0));
+  if (magnitude === 0) return vector;
+  return vector.map((v) => v / magnitude);
+}
+
 export async function generateEmbedding(text: string): Promise<number[]> {
   const response = await openai.embeddings.create({
     model: config.embedding.model,
     input: text,
   });
 
-  return response.data[0]?.embedding || [];
+  return normalizeVector(response.data[0]?.embedding || []);
 }
 
 export async function generateEmbeddings(texts: string[]): Promise<number[][]> {
@@ -74,5 +85,5 @@ export async function generateEmbeddings(texts: string[]): Promise<number[][]> {
     input: texts,
   });
 
-  return response.data.map((d) => d.embedding);
+  return response.data.map((d) => normalizeVector(d.embedding));
 }

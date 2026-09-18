@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Chunk } from "../mongo";
 import { generateEmbedding } from "../llm";
 import { SourceCitation } from "../../types";
@@ -9,6 +10,10 @@ export interface RetrievalOptions {
   minScore?: number;
 }
 
+/**
+ * Embeddings are stored L2-normalized (see `normalizeVector`), so this dot
+ * product is exactly cosine similarity, bounded to [-1, 1].
+ */
 export async function hybridRetrieve(options: RetrievalOptions): Promise<SourceCitation[]> {
   const { repoId, query, topK = 10, minScore = 0.5 } = options;
 
@@ -16,7 +21,7 @@ export async function hybridRetrieve(options: RetrievalOptions): Promise<SourceC
 
   const chunks = await Chunk.aggregate([
     {
-      $match: { repoId: require("mongoose").Types.ObjectId.createFromHexString(repoId) },
+      $match: { repoId: mongoose.Types.ObjectId.createFromHexString(repoId) },
     },
     {
       $addFields: {
@@ -49,6 +54,7 @@ export async function hybridRetrieve(options: RetrievalOptions): Promise<SourceC
         endLine: 1,
         content: 1,
         similarity: 1,
+        symbolName: 1,
       },
     },
   ]);
@@ -62,6 +68,7 @@ export async function hybridRetrieve(options: RetrievalOptions): Promise<SourceC
       endLine: c.endLine,
       relevance: c.similarity,
       snippet: c.content.slice(0, 500),
+      symbolName: c.symbolName,
     }));
 }
 
@@ -70,26 +77,51 @@ export async function keywordSearch(
   query: string,
   limit: number = 20
 ): Promise<SourceCitation[]> {
-  const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+  const terms = query
+    .split(/\s+/)
+    .map((t) => t.trim())
+    .filter((t) => t.length > 1)
+    .map(escapeRegex);
+
+  if (terms.length === 0) return [];
+
+  const termRegexes = terms.map((t) => new RegExp(t, "i"));
+  const combinedRegex = new RegExp(terms.join("|"), "i");
 
   const chunks = await Chunk.find({
-    repoId: require("mongoose").Types.ObjectId.createFromHexString(repoId),
-    $or: [
-      { content: regex },
-      { symbolName: regex },
-      { filePath: regex },
-    ],
+    repoId: mongoose.Types.ObjectId.createFromHexString(repoId),
+    $or: [{ content: combinedRegex }, { symbolName: combinedRegex }, { filePath: combinedRegex }],
   })
-    .limit(limit)
-    .select("filePath startLine endLine content")
+    .limit(limit * 3)
+    .select("filePath startLine endLine content symbolName")
     .lean();
 
-  return chunks.map((c: Record<string, unknown>) => ({
-    chunkId: (c._id as string).toString(),
-    filePath: c.filePath as string,
-    startLine: c.startLine as number,
-    endLine: c.endLine as number,
-    relevance: 1.0,
-    snippet: (c.content as string).slice(0, 500),
-  }));
+  return chunks
+    .map((c: Record<string, unknown>) => {
+      const content = c.content as string;
+      const symbolName = (c.symbolName as string) || "";
+      const filePath = c.filePath as string;
+
+      // Relevance = fraction of query terms matched, boosted if the match is in the symbol/file name.
+      const matchedTerms = termRegexes.filter((r) => r.test(content) || r.test(symbolName) || r.test(filePath));
+      const nameBoost = termRegexes.some((r) => r.test(symbolName)) ? 0.2 : 0;
+      const relevance = Math.min(1, matchedTerms.length / terms.length + nameBoost);
+
+      return {
+        chunkId: (c._id as string).toString(),
+        filePath,
+        startLine: c.startLine as number,
+        endLine: c.endLine as number,
+        relevance,
+        snippet: content.slice(0, 500),
+        symbolName: symbolName || undefined,
+      };
+    })
+    .filter((c) => c.relevance > 0)
+    .sort((a, b) => b.relevance - a.relevance)
+    .slice(0, limit);
+}
+
+function escapeRegex(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

@@ -21,7 +21,7 @@ export function buildChatPrompt(
   codeContext: string,
   graphContext: string,
   history: { role: string; content: string }[]
-): { role: "system" | "user"; content: string }[] {
+): { role: "system" | "user" | "assistant"; content: string }[] {
   const messages = [
     { role: "system" as const, content: SYSTEM_PROMPTS.chat },
     ...history.map((m) => ({
