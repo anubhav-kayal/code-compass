@@ -1,4 +1,4 @@
-const MAX_CHUNK_SIZE = 1000;
+const MAX_CHUNK_SIZE = 200;
 const MIN_CHUNK_SIZE = 50;
 
 export function splitLargeFunction(

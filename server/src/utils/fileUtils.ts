@@ -18,13 +18,29 @@ export async function removeDir(dirPath: string): Promise<void> {
   await fs.rm(dirPath, { recursive: true, force: true });
 }
 
+const SKIPPED_DIRS = new Set([
+  "node_modules",
+  "dist",
+  "build",
+  "out",
+  "target",
+  "vendor",
+  "venv",
+  ".venv",
+  "env",
+  "__pycache__",
+  ".next",
+  ".nuxt",
+  "coverage",
+]);
+
 export async function listFiles(dirPath: string, extension?: string): Promise<string[]> {
   const files: string[] = [];
   async function walk(dir: string): Promise<void> {
     const entries = await fs.readdir(dir, { withFileTypes: true });
     for (const entry of entries) {
       const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory() && !entry.name.startsWith(".") && entry.name !== "node_modules") {
+      if (entry.isDirectory() && !entry.name.startsWith(".") && !SKIPPED_DIRS.has(entry.name)) {
         await walk(fullPath);
       } else if (entry.isFile()) {
         if (!extension || fullPath.endsWith(extension)) {

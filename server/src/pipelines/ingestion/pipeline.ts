@@ -7,6 +7,7 @@ import { buildGraph } from "../graph-builder/buildCallGraph";
 import { Repo, Chunk, IndexJob } from "../../services/mongo";
 import { neo4jClient } from "../../services/neo4j";
 import { logger } from "../../utils/logger";
+import { parseGithubUrl } from "../../utils/githubUrl";
 
 export interface PipelineResult {
   repoId: string;
@@ -20,18 +21,15 @@ export async function runIngestionPipeline(
   branch?: string
 ): Promise<PipelineResult> {
   let cloneResult: CloneResult | null = null;
-  const match = githubUrl.match(/github\.com\/([^/]+)\/([^/]+?)(?:\.git)?$/);
-  if (!match) throw new Error("Invalid GitHub URL");
-
-  const owner = match[1];
-  const name = match[2].replace(".git", "");
+  const ref = parseGithubUrl(githubUrl);
+  if (!ref) throw new Error("Invalid GitHub URL");
 
   const repo = await Repo.findOneAndUpdate(
     { githubUrl },
     {
       githubUrl,
-      owner,
-      name,
+      owner: ref.owner,
+      name: ref.name,
       defaultBranch: branch || "main",
       status: "indexing",
     },
@@ -46,7 +44,7 @@ export async function runIngestionPipeline(
   });
 
   try {
-    cloneResult = await cloneRepo(githubUrl, branch);
+    cloneResult = await cloneRepo(ref.cloneUrl, branch);
     await IndexJob.findByIdAndUpdate(job._id, {
       $set: { "stages.clone": "completed", progress: 20 },
     });
