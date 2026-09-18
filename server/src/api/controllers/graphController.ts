@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
+import { int } from "neo4j-driver";
 import { neo4jClient, queries } from "../../services/neo4j";
-import { getFunctionContext, getArchitectureSummary, getDependencyChain } from "../../services/rag";
+import { getArchitectureSummary, getDependencyChain, getImpactAnalysis } from "../../services/rag";
 import { AppError } from "../middleware/errorHandler";
+
+const MAX_GRAPH_NODES = 500;
 
 export async function getCallers(req: Request, res: Response): Promise<void> {
   const { function: functionName, repoId } = req.query as Record<string, string>;
@@ -22,9 +25,9 @@ export async function getCallees(req: Request, res: Response): Promise<void> {
 }
 
 export async function getDependencies(req: Request, res: Response): Promise<void> {
-  const { path, repoId } = req.query as Record<string, string>;
+  const { path, repoId, depth } = req.query as Record<string, string>;
   if (!path || !repoId) throw new AppError(400, "path and repoId are required");
-  const result = await getDependencyChain(path, repoId);
+  const result = await getDependencyChain(path, repoId, parseInt(depth) || 2);
   res.json({ success: true, data: result });
 }
 
@@ -40,12 +43,12 @@ export async function getRepoGraph(req: Request, res: Response): Promise<void> {
   if (!repoId) throw new AppError(400, "repoId is required");
 
   const nodesResult = await neo4jClient.runQuery(
-    "MATCH (n {repoId: $repoId}) RETURN n",
-    { repoId }
+    "MATCH (n {repoId: $repoId}) RETURN n LIMIT $limit",
+    { repoId, limit: int(MAX_GRAPH_NODES) }
   );
   const relsResult = await neo4jClient.runQuery(
-    "MATCH (a {repoId: $repoId})-[r]->(b {repoId: $repoId}) RETURN r",
-    { repoId }
+    "MATCH (a {repoId: $repoId})-[r]->(b {repoId: $repoId}) RETURN r LIMIT $limit",
+    { repoId, limit: int(MAX_GRAPH_NODES * 4) }
   );
 
   const nodes = nodesResult.nodes.map((n) => ({
@@ -71,11 +74,6 @@ export async function getRepoGraph(req: Request, res: Response): Promise<void> {
 
 export async function getImpact(req: Request, res: Response): Promise<void> {
   const { function: functionName, repoId, depth } = req.query as Record<string, string>;
-  const result = await getFunctionContext({
-    functionName,
-    repoId,
-    direction: "callees",
-    depth: parseInt(depth || "2"),
-  });
+  const result = await getImpactAnalysis(functionName, repoId, parseInt(depth) || 3);
   res.json({ success: true, data: result });
 }

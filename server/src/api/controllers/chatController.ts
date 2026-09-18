@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import { Conversation, Chunk } from "../../services/mongo";
 import { buildChatPrompt, chatCompletion } from "../../services/llm";
 import { hybridRetrieve, keywordSearch } from "../../services/rag";
@@ -33,16 +34,24 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
     .map((r) => `// ${r.filePath}:${r.startLine}-${r.endLine}\n${r.snippet}`)
     .join("\n\n---\n\n");
 
+  // Prefer graph context anchored to a specific symbol — either named explicitly in the
+  // question, or surfaced by retrieval — over dumping the whole-repo architecture summary,
+  // which is usually irrelevant to the actual question and can be huge on large repos.
   let graphContext = "";
   try {
     const functionMatch = message.match(/(?:function|method|class)\s+['"]?(\w+)['"]?/i);
-    if (functionMatch) {
+    const topSymbol = mergedResults.find((r) => r.symbolName)?.symbolName;
+    const targetSymbol = functionMatch?.[1] || topSymbol;
+
+    if (targetSymbol) {
       graphContext = await getFunctionContext({
-        functionName: functionMatch[1],
+        functionName: targetSymbol,
         repoId,
         direction: "both",
       });
-    } else {
+    }
+
+    if (!graphContext) {
       graphContext = await getArchitectureSummary(repoId);
     }
   } catch {
@@ -60,7 +69,7 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
     role: "assistant",
     content: response.content,
     sources: mergedResults.slice(0, 10).map((r) => ({
-      chunkId: r.chunkId,
+      chunkId: mongoose.Types.ObjectId.createFromHexString(r.chunkId),
       filePath: r.filePath,
       relevance: r.relevance,
     })),
@@ -80,12 +89,25 @@ export async function sendMessage(req: Request, res: Response): Promise<void> {
   });
 }
 
-export async function listConversations(_req: Request, res: Response): Promise<void> {
-  const conversations = await Conversation.find()
-    .select("repoId messages role createdAt")
-    .sort({ updatedAt: -1 })
-    .lean();
-  res.json({ success: true, data: conversations });
+export async function listConversations(req: Request, res: Response): Promise<void> {
+  const { repoId, page, limit } = req.query as unknown as { repoId?: string; page: number; limit: number };
+  const filter = repoId ? { repoId: mongoose.Types.ObjectId.createFromHexString(repoId) } : {};
+
+  const [conversations, total] = await Promise.all([
+    Conversation.find(filter)
+      .select("repoId messages createdAt updatedAt")
+      .sort({ updatedAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean(),
+    Conversation.countDocuments(filter),
+  ]);
+
+  res.json({
+    success: true,
+    data: conversations,
+    pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
+  });
 }
 
 export async function getConversation(req: Request, res: Response): Promise<void> {

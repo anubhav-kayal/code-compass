@@ -1,18 +1,26 @@
 import { Router } from "express";
 import { z } from "zod";
-import { validate } from "../middleware/validateRequest";
+import { validate, objectIdSchema } from "../middleware/validateRequest";
 import { asyncHandler } from "../middleware/asyncHandler";
 import * as chatController from "../controllers/chatController";
 
 export const chatRoutes = Router();
 
 const chatSchema = z.object({
-  repoId: z.string(),
-  conversationId: z.string().optional(),
-  message: z.string().min(1),
+  repoId: objectIdSchema,
+  conversationId: objectIdSchema.optional(),
+  message: z.string().min(1).max(8000),
 });
 
+const listConversationsSchema = z.object({
+  repoId: objectIdSchema.optional(),
+  page: z.coerce.number().int().positive().optional().default(1),
+  limit: z.coerce.number().int().positive().max(100).optional().default(20),
+});
+
+const idParamSchema = z.object({ id: objectIdSchema });
+
 chatRoutes.post("/", validate(chatSchema), asyncHandler(chatController.sendMessage));
-chatRoutes.get("/conversations", asyncHandler(chatController.listConversations));
-chatRoutes.get("/conversations/:id", asyncHandler(chatController.getConversation));
-chatRoutes.delete("/conversations/:id", asyncHandler(chatController.deleteConversation));
+chatRoutes.get("/conversations", validate(listConversationsSchema, "query"), asyncHandler(chatController.listConversations));
+chatRoutes.get("/conversations/:id", validate(idParamSchema, "params"), asyncHandler(chatController.getConversation));
+chatRoutes.delete("/conversations/:id", validate(idParamSchema, "params"), asyncHandler(chatController.deleteConversation));

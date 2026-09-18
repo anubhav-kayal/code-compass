@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
+import mongoose from "mongoose";
 import { Chunk } from "../../services/mongo";
-import { hybridRetrieve, keywordSearch } from "../../services/rag";
+import { hybridRetrieve, keywordSearch, mergeResults } from "../../services/rag";
 import { neo4jClient } from "../../services/neo4j";
 import { int } from "neo4j-driver";
 import { AppError } from "../middleware/errorHandler";
@@ -28,7 +29,7 @@ export async function search(req: Request, res: Response): Promise<void> {
     }));
   } else if (type === "file") {
     const chunks = await Chunk.find({
-      repoId: require("mongoose").Types.ObjectId.createFromHexString(repoId),
+      repoId: mongoose.Types.ObjectId.createFromHexString(repoId),
       filePath: { $regex: q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" },
     })
       .limit(parseInt(limit))
@@ -47,13 +48,7 @@ export async function search(req: Request, res: Response): Promise<void> {
       topK: parseInt(limit),
     });
     const keyword = await keywordSearch(repoId, q, parseInt(limit));
-    const seen = new Set<string>();
-    results = [...semantic, ...keyword].filter((r) => {
-      const key = `${r.filePath}:${r.startLine}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    }).slice(0, parseInt(limit));
+    results = mergeResults(semantic, keyword).slice(0, parseInt(limit));
   }
 
   res.json({

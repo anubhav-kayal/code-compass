@@ -33,6 +33,7 @@ export interface SourceCitation {
   endLine: number;
   relevance: number;
   snippet: string;
+  symbolName?: string;
 }
 
 export interface IndexRepoRequest {
