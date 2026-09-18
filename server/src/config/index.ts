@@ -30,4 +30,13 @@ export const config = {
   redis: {
     url: process.env.REDIS_URL || "redis://localhost:6379",
   },
+  security: {
+    // If set, all /api routes require a matching `x-api-key` header. Unset by default so a
+    // local `docker compose up && npm run dev` keeps working with zero required config.
+    apiKey: process.env.API_KEY || "",
+    allowedOrigins: (process.env.ALLOWED_ORIGINS || "http://localhost:3000")
+      .split(",")
+      .map((o) => o.trim())
+      .filter(Boolean),
+  },
 };
