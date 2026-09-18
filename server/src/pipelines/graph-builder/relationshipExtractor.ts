@@ -13,7 +13,7 @@ export function extractFunctionCalls(
   const calls: FunctionCall[] = [];
 
   for (const file of parsedFiles) {
-    const functionsInFile = file.symbols.filter((s) => s.type === "function");
+    const functionsInFile = file.symbols.filter((s) => s.type === "function" || s.type === "method");
     const content = file.content;
 
     for (const fn of functionsInFile) {

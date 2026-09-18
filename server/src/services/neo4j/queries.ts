@@ -10,12 +10,6 @@ export const CALLEE_QUERY = `
   ORDER BY callee.name
 `;
 
-export const IMPACT_ANALYSIS_QUERY = `
-  MATCH path = (source:Function {name: $name, repoId: $repoId})-[:CALLS*1..$depth]->(affected)
-  RETURN path
-  LIMIT 100
-`;
-
 export const MODULE_DEPENDENCIES_QUERY = `
   MATCH (f:File {path: $path, repoId: $repoId})-[:IMPORTS]->(imp:Import)-[:RESOLVES_TO]->(target:File)
   RETURN target

@@ -1,49 +1,39 @@
 import path from "path";
 
-export function resolveImportPath(
-  importSource: string,
-  currentFilePath: string
-): string | null {
-  if (importSource.startsWith(".") || importSource.startsWith("..")) {
-    const currentDir = path.dirname(currentFilePath);
-    const resolved = path.resolve(currentDir, importSource);
-
-    const extensions = [".ts", ".tsx", ".js", ".jsx", ".py", ".go", "/index.ts", "/index.js"];
-    for (const ext of extensions) {
-      const candidate = resolved + ext;
-      if (candidate) return candidate;
-    }
-
-    return null;
-  }
-
-  return null;
-}
+const RESOLVABLE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".py", ".go"];
 
 export function isExternalImport(source: string): boolean {
-  return !source.startsWith(".") && !source.startsWith("..");
+  return !source.startsWith(".") && !source.startsWith("/");
 }
 
+/**
+ * Resolves relative import sources against the actual set of parsed file
+ * paths (all repo-root-relative, posix-separated), instead of guessing a
+ * single extension. Returns null for external packages or unmatched paths.
+ */
 export class ImportResolver {
-  private fileMap: Map<string, string> = new Map();
+  private files: Set<string>;
 
   constructor(files: string[]) {
-    for (const f of files) {
-      const basename = path.basename(f, path.extname(f));
-      this.fileMap.set(basename, f);
-      this.fileMap.set(f, f);
-    }
+    this.files = new Set(files);
   }
 
   resolve(importSource: string, currentFile: string): string | null {
-    const resolved = resolveImportPath(importSource, currentFile);
-    if (resolved) return resolved;
+    if (isExternalImport(importSource)) return null;
 
-    if (this.fileMap.has(importSource)) {
-      return this.fileMap.get(importSource)!;
+    const currentDir = path.posix.dirname(currentFile);
+    const base = path.posix.normalize(path.posix.join(currentDir, importSource));
+
+    const candidates = [
+      base,
+      ...RESOLVABLE_EXTENSIONS.map((ext) => `${base}${ext}`),
+      ...RESOLVABLE_EXTENSIONS.map((ext) => path.posix.join(base, `index${ext}`)),
+    ];
+
+    for (const candidate of candidates) {
+      if (this.files.has(candidate)) return candidate;
     }
 
-    const basename = path.basename(importSource, path.extname(importSource));
-    return this.fileMap.get(basename) || null;
+    return null;
   }
 }
