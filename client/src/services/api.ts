@@ -1,8 +1,13 @@
 import axios from "axios";
 
+const apiKey = import.meta.env.VITE_API_KEY as string | undefined;
+
 const api = axios.create({
   baseURL: "/api",
-  headers: { "Content-Type": "application/json" },
+  headers: {
+    "Content-Type": "application/json",
+    ...(apiKey ? { "x-api-key": apiKey } : {}),
+  },
 });
 
 export const repoApi = {

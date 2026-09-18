@@ -46,7 +46,11 @@ function App() {
         />
       ) : (
         <div className="h-full animate-fade-in">
-          {activeView === "chat" && <ChatPanel key={activeRepoId} repoId={activeRepoId} />}
+          {/* ChatPanel stays mounted across tab switches so in-progress conversations
+              aren't wiped just by clicking Search/Graph/Settings and coming back. */}
+          <div className={activeView === "chat" ? "h-full" : "hidden"}>
+            <ChatPanel key={activeRepoId} repoId={activeRepoId} />
+          </div>
           {activeView === "search" && (
             <div className="h-full overflow-y-auto p-6">
               <SearchBar repoId={activeRepoId} />
